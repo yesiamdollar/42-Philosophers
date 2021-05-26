@@ -6,7 +6,7 @@
 /*   By: aboutahr <aboutahr@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/24 18:09:38 by aboutahr          #+#    #+#             */
-/*   Updated: 2021/05/24 18:09:39 by aboutahr         ###   ########.fr       */
+/*   Updated: 2021/05/26 13:28:02 by aboutahr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,7 @@ static t_philo	*philo_init(t_state *state, t_philo *philo)
 		philo[i].lfork = i;
 		philo[i].eat_count = 0;
 		philo[i].state = state;
+		philo[i].done = 1;
 		pthread_mutex_init(&philo[i].mutex, NULL);
 		pthread_mutex_init(&philo[i].eat_m, NULL);
 		pthread_mutex_lock(&philo[i].eat_m);
@@ -78,9 +79,10 @@ static int	parser(int argc, const char **argv, t_state *state)
 	if (argc == 6)
 		state->must_eat = ft_atoi(argv[5]);
 	else
-		state->must_eat = 0;
-	state->done = 0;
+		state->must_eat = -1;
+	state->all_done = 0;
 	state->loop = 1;
+	state->created = 0;
 	state->philo = philo_init(state, state->philo);
 	if (!state->philo)
 		return (1);
@@ -99,14 +101,17 @@ int	main(int argc, const char **argv)
 	}
 	if (parser(argc, argv, &state))
 	{
+		ft_exit(&state);
 		return (ft_error("ERROR:: bad arguments!!\n"));
 	}
 	if (start_thread(&state))
 	{
+		ft_exit(&state);
 		return (ft_error("error :: cannot start thread\n"));
 	}
 	pthread_mutex_lock(&state.somebody_dead_m);
 	state.loop = 0;
 	pthread_mutex_unlock(&state.somebody_dead_m);
+	ft_exit(&state);
 	return (0);
 }

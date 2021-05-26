@@ -6,13 +6,13 @@
 /*   By: aboutahr <aboutahr@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/24 18:09:43 by aboutahr          #+#    #+#             */
-/*   Updated: 2021/05/24 18:09:44 by aboutahr         ###   ########.fr       */
+/*   Updated: 2021/05/26 14:43:14 by aboutahr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "header.h"
 
-static void	*supervisor(void *philo_v)
+static void	*shenigami(void *philo_v)
 {
 	t_philo	*philo;
 
@@ -33,26 +33,6 @@ static void	*supervisor(void *philo_v)
 	return (NULL);
 }
 
-static void	*cycle(void *philo_v)
-{
-	t_philo		*philo;
-	pthread_t	tid;
-
-	philo = (t_philo *)philo_v;
-	philo->last_eat = get_time();
-	philo->limit = philo->last_eat + philo->state->time_to_die;
-	if (pthread_create(&tid, NULL, &supervisor, philo_v) != 0)
-		return (NULL);
-	while (philo->state->loop)
-	{
-		message(philo->state, philo, THINK);
-		take_forks(philo->state, philo);
-		eat(philo->state, philo);
-		drop_forks(philo->state, philo);
-	}
-	return ((void *)0);
-}
-
 static void	*xcounter(void *state_v)
 {
 	t_state	*state;
@@ -65,11 +45,36 @@ static void	*xcounter(void *state_v)
 	{
 		i = 0;
 		while (i < state->n)
+		{
 			pthread_mutex_lock(&state->philo[i++].eat_m);
+		}
 		total++;
 	}
 	message(state, &state->philo[0], DONE);
 	pthread_mutex_unlock(&state->somebody_dead_m);
+	return ((void *)0);
+}
+
+static void	*cycle(void *philo_v)
+{
+	t_philo		*philo;
+	pthread_t	tid;
+	t_state		*state;
+
+	philo = (t_philo *)philo_v;
+	state = philo->state;
+	philo->last_eat = get_time();
+	philo->limit = philo->last_eat + philo->state->time_to_die;
+	if (pthread_create(&tid, NULL, &shenigami, philo_v) != 0)
+		return (NULL);
+	while (state->loop)
+	{
+		message(state, philo, THINK);
+		take_forks(state, philo);
+		eat(state, philo);
+		drop_forks(state, philo);
+	}
+	
 	return ((void *)0);
 }
 
@@ -80,7 +85,7 @@ int	start_thread(t_state *state)
 	void		*philo;
 
 	state->start = get_time();
-	if (state->must_eat > 0)
+	if (state->must_eat != -1)
 	{
 		if (pthread_create(&tid, NULL, &xcounter, (void *)state) != 0)
 			return (1);

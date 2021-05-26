@@ -6,7 +6,7 @@
 /*   By: aboutahr <aboutahr@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/24 18:09:46 by aboutahr          #+#    #+#             */
-/*   Updated: 2021/05/24 18:09:47 by aboutahr         ###   ########.fr       */
+/*   Updated: 2021/05/26 13:30:52 by aboutahr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,11 @@ size_t	ft_strlen(const char *s)
 	while (s[i])
 		i++;
 	return (i);
+}
+
+void	ft_putstr(const char *s)
+{
+	write(1, s, ft_strlen(s));
 }
 
 int	ft_error(const char *s)
