@@ -6,7 +6,7 @@
 /*   By: aboutahr <aboutahr@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/24 18:31:25 by aboutahr          #+#    #+#             */
-/*   Updated: 2021/05/26 20:51:42 by aboutahr         ###   ########.fr       */
+/*   Updated: 2021/05/26 20:57:01 by aboutahr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,5 @@ void	ft_exit(t_state *state)
 		sem_unlink(EATSEM);
 		free(state->philo);
 	}
-	sem_unlink(WRITESEM);
 	sem_unlink(DEADSEM);
 }

@@ -6,7 +6,7 @@
 /*   By: aboutahr <aboutahr@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/24 18:09:43 by aboutahr          #+#    #+#             */
-/*   Updated: 2021/05/26 14:43:14 by aboutahr         ###   ########.fr       */
+/*   Updated: 2021/05/26 20:46:09 by aboutahr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,9 +45,7 @@ static void	*xcounter(void *state_v)
 	{
 		i = 0;
 		while (i < state->n)
-		{
 			pthread_mutex_lock(&state->philo[i++].eat_m);
-		}
 		total++;
 	}
 	message(state, &state->philo[0], DONE);
@@ -65,7 +63,7 @@ static void	*cycle(void *philo_v)
 	state = philo->state;
 	philo->last_eat = get_time();
 	philo->limit = philo->last_eat + philo->state->time_to_die;
-	if (pthread_create(&tid, NULL, &shenigami, philo_v) != 0)
+	if (pthread_create(&tid, NULL, &shenigami, philo_v))
 		return (NULL);
 	while (state->loop)
 	{
@@ -74,7 +72,6 @@ static void	*cycle(void *philo_v)
 		eat(state, philo);
 		drop_forks(state, philo);
 	}
-	
 	return ((void *)0);
 }
 
@@ -87,17 +84,15 @@ int	start_thread(t_state *state)
 	state->start = get_time();
 	if (state->must_eat != -1)
 	{
-		if (pthread_create(&tid, NULL, &xcounter, (void *)state) != 0)
+		if (pthread_create(&tid, NULL, &xcounter, (void *)state))
 			return (1);
 	}
 	i = 0;
 	while (i < state->n)
 	{
 		philo = (void *)(&state->philo[i]);
-		if (pthread_create(&tid, NULL, &cycle, philo) != 0)
-		{
+		if (pthread_create(&tid, NULL, &cycle, philo))
 			return (1);
-		}
 		usleep(100);
 		i++;
 	}

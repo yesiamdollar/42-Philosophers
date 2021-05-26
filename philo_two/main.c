@@ -6,7 +6,7 @@
 /*   By: aboutahr <aboutahr@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/24 18:09:38 by aboutahr          #+#    #+#             */
-/*   Updated: 2021/05/26 15:16:02 by aboutahr         ###   ########.fr       */
+/*   Updated: 2021/05/26 20:52:20 by aboutahr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,8 +61,8 @@ static t_philo	*philo_init(t_state *state, t_philo *philo)
 		philo[i].lfork = i;
 		philo[i].eat_count = 0;
 		philo[i].state = state;
-		philo[i].mutex = ft_sem_open(PhiloSem, 1);
-		philo[i].eat_m = ft_sem_open(EatSem, 0);
+		philo[i].mutex = ft_sem_open(PHILOSEM, 1);
+		philo[i].eat_m = ft_sem_open(EATSEM, 0);
 		if (philo[i].mutex < 0 || philo[i].eat_m < 0)
 			return (NULL);
 		i++;
@@ -108,7 +108,6 @@ int	main(int argc, const char **argv)
 	}
 	sem_wait(state.somebody_dead_m);
 	state.loop = 0;
-	// sem_post(state);
-	// ft_exit(&state);
+	ft_exit(&state);
 	return (0);
 }

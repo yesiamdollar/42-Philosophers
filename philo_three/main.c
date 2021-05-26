@@ -6,7 +6,7 @@
 /*   By: aboutahr <aboutahr@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/24 18:09:38 by aboutahr          #+#    #+#             */
-/*   Updated: 2021/05/26 20:42:41 by aboutahr         ###   ########.fr       */
+/*   Updated: 2021/05/26 20:56:35 by aboutahr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,11 +21,11 @@ static int	all_is_int(int argc, const char **argv)
 	while (i < argc)
 	{
 		j = 0;
+		if (ft_strlen(argv[i]) > 10)
+			return (1);
 		while (argv[i][j])
 		{
 			if (argv[i][j] < '0' || argv[i][j] > '9')
-				return (1);
-			else if (ft_strlen(argv[i]) > 10)
 				return (1);
 			j++;
 		}
@@ -59,10 +59,12 @@ static t_philo	*philo_init(t_state *state, t_philo *philo)
 		philo[i].is_eating = 0;
 		philo[i].rfork = (i + 1) % state->n;
 		philo[i].lfork = i;
+		philo[i].eat_count = 0;
 		philo[i].state = state;
-		pthread_mutex_init(&philo[i].mutex, NULL);
-		pthread_mutex_init(&philo[i].eat_m, NULL);
-		pthread_mutex_lock(&philo[i].eat_m);
+		philo[i].mutex = ft_sem_open(PHILOSEM, 1);
+		philo[i].eat_m = ft_sem_open(EATSEM, 0);
+		if (philo[i].mutex < 0 || philo[i].eat_m < 0)
+			return (NULL);
 		i++;
 	}
 	return (philo);
@@ -78,11 +80,12 @@ static int	parser(int argc, const char **argv, t_state *state)
 		state->must_eat = ft_atoi(argv[5]);
 	else
 		state->must_eat = -1;
+	state->dead = 1;
 	state->loop = 1;
 	state->philo = philo_init(state, state->philo);
 	if (!state->philo)
 		return (1);
-	if (init_mutexes(state))
+	if (init_semaphores(state))
 		return (1);
 	return (0);
 }
@@ -90,6 +93,7 @@ static int	parser(int argc, const char **argv, t_state *state)
 int	main(int argc, const char **argv)
 {
 	t_state	state;
+	int		i;
 
 	if (arg_checker(argc, argv))
 	{
@@ -97,17 +101,16 @@ int	main(int argc, const char **argv)
 	}
 	if (parser(argc, argv, &state))
 	{
-		ft_exit(&state);
 		return (ft_error("ERROR:: bad arguments!!\n"));
 	}
 	if (start_thread(&state))
 	{
-		ft_exit(&state);
 		return (ft_error("error :: cannot start thread\n"));
 	}
-	pthread_mutex_lock(&state.somebody_dead_m);
-	state.loop = 0;
-	pthread_mutex_unlock(&state.somebody_dead_m);
-	ft_exit(&state);
+	sem_wait(state.somebody_dead_m);
+	sem_post(state.write_m);
+	i = 0;
+	while (i < state.n)
+		kill(state.philo[i++].pid, SIGKILL);
 	return (0);
 }

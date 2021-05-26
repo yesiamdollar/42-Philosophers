@@ -6,7 +6,7 @@
 /*   By: aboutahr <aboutahr@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/24 18:09:30 by aboutahr          #+#    #+#             */
-/*   Updated: 2021/05/26 13:31:05 by aboutahr         ###   ########.fr       */
+/*   Updated: 2021/05/26 20:46:48 by aboutahr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,11 +33,8 @@ typedef struct s_philo
 	int				is_eating;
 	int				lfork;
 	int				rfork;
-	int				eat_count;
 	int				limit;
 	int				last_eat;
-	int				done;
-	pthread_t		tid;
 
 	pthread_mutex_t	mutex;
 	pthread_mutex_t	eat_m;
@@ -52,9 +49,6 @@ typedef struct s_state{
 	int				time_to_sleep;
 	int				must_eat;
 	int				loop;
-
-	int				created;
-	int				all_done;
 
 	int				start;
 
@@ -74,7 +68,6 @@ int		start_thread(t_state *state);
 int		get_time(void);
 void	ft_putnbr_fd(int n, int fd);
 void	ft_exit(t_state *state);
-void	ft_putstr(const char *s);
 
 /* LIFE CYCLE */
 void	eat(t_state *state, t_philo *philo);

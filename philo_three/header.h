@@ -6,7 +6,7 @@
 /*   By: aboutahr <aboutahr@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/24 18:09:30 by aboutahr          #+#    #+#             */
-/*   Updated: 2021/05/26 20:52:04 by aboutahr         ###   ########.fr       */
+/*   Updated: 2021/05/26 20:58:09 by aboutahr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 # include <stdlib.h>
 # include <pthread.h>
 # include <semaphore.h>
+# include <signal.h>
 
 # define EAT 	0
 # define SLEEP 1
@@ -32,6 +33,7 @@
 # define EATSEM "eatsem"
 # define PHILOSEM "philosem"
 # define DEADSEM "deadsem"
+# define DEADWRITESEM "deadwritesem"
 
 typedef struct s_philo
 {
@@ -43,6 +45,8 @@ typedef struct s_philo
 	int				limit;
 	int				last_eat;
 	int				done;
+
+	pid_t			pid;
 
 	sem_t			*mutex;
 	sem_t			*eat_m;
@@ -57,14 +61,16 @@ typedef struct s_state{
 	int				time_to_sleep;
 	int				must_eat;
 	int				loop;
+	int				dead;
 
 	int				index;
 	int				all_done;
 
 	int				start;
 
-	sem_t			*forks_m;
+	sem_t			*forks_m;		
 	sem_t			*write_m;
+	sem_t			*dead_write_m;
 	sem_t			*somebody_dead_m;
 
 	struct s_philo	*philo;

@@ -6,7 +6,7 @@
 /*   By: aboutahr <aboutahr@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/24 18:09:43 by aboutahr          #+#    #+#             */
-/*   Updated: 2021/05/26 20:52:30 by aboutahr         ###   ########.fr       */
+/*   Updated: 2021/05/26 20:55:42 by aboutahr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,21 +75,25 @@ static void	*cycle(void *philo_v)
 
 int	start_thread(t_state *state)
 {
-	int			i;
 	pthread_t	tid;
-	void		*philo;
+	t_philo		*philo;
+	int			i;
 
 	state->start = get_time();
 	if (state->must_eat != -1)
-	{
 		if (pthread_create(&tid, NULL, &xcounter, (void *)state))
 			return (1);
-	}
 	i = 0;
 	while (i < state->n)
 	{
-		philo = (void *)(&state->philo[i]);
-		if (pthread_create(&tid, NULL, &cycle, philo))
+		philo = (&state->philo[i]);
+		philo->pid = fork();
+		if (philo->pid == 0)
+		{
+			cycle(philo);
+			exit(0);
+		}
+		else if (philo->pid < 0)
 			return (1);
 		usleep(100);
 		i++;
