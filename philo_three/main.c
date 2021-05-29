@@ -6,7 +6,7 @@
 /*   By: aboutahr <aboutahr@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/24 18:09:38 by aboutahr          #+#    #+#             */
-/*   Updated: 2021/05/26 20:56:35 by aboutahr         ###   ########.fr       */
+/*   Updated: 2021/05/28 18:01:36 by aboutahr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,9 +45,10 @@ static int	arg_checker(int argc, const char **argv)
 	return (0);
 }
 
-static t_philo	*philo_init(t_state *state, t_philo *philo)
+static t_philo	*philo_init(t_state *state)
 {
-	int	i;
+	int		i;
+	t_philo	*philo;
 
 	philo = malloc(sizeof(t_philo) * state->n);
 	if (!philo)
@@ -80,9 +81,8 @@ static int	parser(int argc, const char **argv, t_state *state)
 		state->must_eat = ft_atoi(argv[5]);
 	else
 		state->must_eat = -1;
-	state->dead = 1;
 	state->loop = 1;
-	state->philo = philo_init(state, state->philo);
+	state->philo = philo_init(state);
 	if (!state->philo)
 		return (1);
 	if (init_semaphores(state))
@@ -99,6 +99,7 @@ int	main(int argc, const char **argv)
 	{
 		return (ft_error("ERROR:: bad arguments!!\n"));
 	}
+	state.philo = NULL;
 	if (parser(argc, argv, &state))
 	{
 		return (ft_error("ERROR:: bad arguments!!\n"));
@@ -112,5 +113,6 @@ int	main(int argc, const char **argv)
 	i = 0;
 	while (i < state.n)
 		kill(state.philo[i++].pid, SIGKILL);
+	ft_exit(&state);
 	return (0);
 }

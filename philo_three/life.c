@@ -6,7 +6,7 @@
 /*   By: aboutahr <aboutahr@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/24 18:09:35 by aboutahr          #+#    #+#             */
-/*   Updated: 2021/05/26 20:54:05 by aboutahr         ###   ########.fr       */
+/*   Updated: 2021/05/28 18:07:35 by aboutahr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ void	message(t_state *state, t_philo *philo, int type)
 			done = 1;
 		write(1, get_message(type), ft_strlen(get_message(type)));
 	}
-	if (type < DEAD)
+	if (!done)
 		sem_post(state->dead_write_m);
 	sem_post(state->write_m);
 }

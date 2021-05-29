@@ -6,7 +6,7 @@
 /*   By: aboutahr <aboutahr@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/24 18:09:43 by aboutahr          #+#    #+#             */
-/*   Updated: 2021/05/26 20:55:42 by aboutahr         ###   ########.fr       */
+/*   Updated: 2021/05/28 17:41:31 by aboutahr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,7 @@ int	start_thread(t_state *state)
 		philo->pid = fork();
 		if (philo->pid == 0)
 		{
-			cycle(philo);
+			cycle((void *)philo);
 			exit(0);
 		}
 		else if (philo->pid < 0)

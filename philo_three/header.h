@@ -6,7 +6,7 @@
 /*   By: aboutahr <aboutahr@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/24 18:09:30 by aboutahr          #+#    #+#             */
-/*   Updated: 2021/05/26 20:58:09 by aboutahr         ###   ########.fr       */
+/*   Updated: 2021/05/28 14:12:06 by aboutahr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,6 @@ typedef struct s_philo
 	int				eat_count;
 	int				limit;
 	int				last_eat;
-	int				done;
 
 	pid_t			pid;
 
@@ -61,14 +60,10 @@ typedef struct s_state{
 	int				time_to_sleep;
 	int				must_eat;
 	int				loop;
-	int				dead;
-
-	int				index;
-	int				all_done;
 
 	int				start;
 
-	sem_t			*forks_m;		
+	sem_t			*forks_m;
 	sem_t			*write_m;
 	sem_t			*dead_write_m;
 	sem_t			*somebody_dead_m;
